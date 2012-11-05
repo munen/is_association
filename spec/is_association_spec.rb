@@ -39,6 +39,11 @@ describe 'ActiveRecord::Base', %q{
     post.is_association?(:comments).should == true
   end
 
+  it 'responds with "true" when relation is as string' do
+    post = Post.new
+    post.is_association?('comments').should == true
+  end
+
   it 'responds with "false" when relation is not an association' do
     post = Post.new
     post.is_association?(:name).should == false
