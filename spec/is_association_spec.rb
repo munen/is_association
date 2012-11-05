@@ -6,37 +6,33 @@ describe 'ActiveRecord::Base', %q{
   a relation is an association.
 } do
 
-
-  before(:each) do
-    ActiveRecord::Base.establish_connection :adapter => "sqlite3", :database => ":memory:"
-
-    ActiveRecord::Migration.create_table :posts do |t|
-      t.string :name
-      t.timestamps
-    end
-    ActiveRecord::Migration.create_table :comments do |t|
-      t.integer :post_id
-      t.timestamps
-    end
-
-    class Post < ActiveRecord::Base
-      has_many :comments
-    end
-
-    class Comment < ActiveRecord::Base
-      belongs_to :post
-    end
-  end
-
-
   it 'responds to is_association?' do
     post = Post.new
     post.should respond_to(:is_association?)
   end
 
-  it 'responds with "true" when relation is an association' do
-    post = Post.new
-    post.is_association?(:comments).should == true
+  context 'different associations' do
+
+    it 'responds with "true" when relation is a "has_many" association' do
+      post = Post.new
+      post.is_association?(:comments).should == true
+    end
+
+    it 'responds with "true" when relation is a "belongs_to" association' do
+      comment = Comment.new
+      comment.is_association?(:post).should == true
+    end
+
+    it 'responds with "true" when relation is a "has_one" association' do
+      post = Post.new
+      post.is_association?(:user).should == true
+    end
+
+    it 'responds with "true" when relation is a "has_and_belongs_to_many" association' do
+      comment = Comment.new
+      comment.is_association?(:users).should == true
+    end
+
   end
 
   it 'responds with "true" when relation is as string' do
